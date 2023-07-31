@@ -63,3 +63,5 @@ Let's assume that you have all requirements installed correctly.
 8. Run "windeploy.bat"
 
 Now you have all compiled binaries copied into "build" directory if no error occured.
+
+

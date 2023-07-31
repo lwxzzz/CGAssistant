@@ -44,7 +44,7 @@ LRESULT UpdateGameWindowTitle(VOID)
 {
 	char szNewTitle[256] = { 0 };
 	if (g_CGAService.IsInGame() && g_CGAService.GetPlayerName() && g_CGAService.GetPlayerName()[0])
-		_snprintf(szNewTitle, 256, "%s CGA [%s] (%dœﬂ) #%d", g_BasicWindowTitle, g_CGAService.GetPlayerName(), g_CGAService.GetServerIndex(), g_MainPort - CGA_PORT_BASE + 1);
+		_snprintf(szNewTitle, 256, "%s CGA [%s] (%dÁ™ü) #%d", g_BasicWindowTitle, g_CGAService.GetPlayerName(), g_CGAService.GetServerIndex(), g_MainPort - CGA_PORT_BASE + 1);
 	else
 		_snprintf(szNewTitle, 256, "%s CGA #%d", g_BasicWindowTitle, g_MainPort - CGA_PORT_BASE + 1);
 	return DefWindowProcA(g_MainHwnd, WM_SETTEXT, NULL, (LPARAM)szNewTitle);
@@ -385,15 +385,15 @@ extern "C"
 				WCHAR szModulePath[MAX_PATH];
 				GetModuleFileNameW(NULL, szModulePath, MAX_PATH);
 				LPCWSTR pModuleName = ExtractFileName(szModulePath);
-				if (!_wcsicmp(pModuleName, L"cg_se_3000.exe") && !strcmp(szClass, "ƒß¡¶±¶±¥"))
+				if (!_wcsicmp(pModuleName, L"cg_se_3000.exe") && !strcmp(szClass, "Ïπ®Ï†úÍ¥úÍµî"))
 				{
 					//InitializeHooks(GetCurrentThreadId(), pMsg->hwnd, CGA::cg_se_3000);
 				}
-				else if (!_wcsicmp(pModuleName, L"cg_item_6000.exe") && !strcmp(szClass, "ƒß¡¶±¶±¥"))
+				else if (!_wcsicmp(pModuleName, L"cg_item_6000.exe") && !strcmp(szClass, "Ïπ®Ï†úÍ¥úÍµî"))
 				{
 					InitializeHooks(GetCurrentThreadId(), pMsg->hwnd, CGA::cg_item_6000);
 				}
-				else if (!_wcsicmp(pModuleName, L"cg_se_6000.exe") && !strcmp(szClass, "ƒß¡¶±¶±¥"))
+				else if (!_wcsicmp(pModuleName, L"cg_se_6000.exe") && !strcmp(szClass, "Ïπ®Ï†úÍ¥úÍµî"))
 				{
 					//InitializeHooks(GetCurrentThreadId(), pMsg->hwnd, CGA::cg_se_6000);
 				}
@@ -459,7 +459,7 @@ int WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved)
 
 		if (!_wcsicmp(pModuleName, L"POLCN_Launcher.exe"))
 		{
-			auto hWnd = FindWindowA(NULL, "°∞“◊ÕÊÕ®°±”È¿÷∆ΩÃ®");
+			auto hWnd = FindWindowA(NULL, "‚ÄúÔ•ÉÈØ§Áπ´‚ÄùÈöäÏûàÌã±ÊÜ©");
 			if (hWnd)
 			{
 				DWORD pid;
@@ -470,6 +470,17 @@ int WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved)
 			InitializeHooks(GetCurrentThreadId(), NULL, CGA::polcn);
 		}
 		else if (!_wcsicmp(pModuleName, L"cg_se_6000.exe"))//Patch se_6000 windowed bug
+		{
+			g_pfnCreateMutexA = (typeCreateMutexA *)GetProcAddress(GetModuleHandleA("kernel32.dll"), "CreateMutexA");
+
+			g_CGAService.m_ImageBase = (ULONG_PTR)GetModuleHandleA(NULL);
+			g_CGAService.m_game_type = CGA::cg_se_6000;
+
+			DetourTransactionBegin();
+			DetourAttach(&(void *&)g_pfnCreateMutexA, ::NewCreateMutexA_PatchGame);
+			DetourTransactionCommit();
+		}
+		else if (!_wcsicmp(pModuleName, L"996ml.exe"))//Patch se_6000 windowed bug
 		{
 			g_pfnCreateMutexA = (typeCreateMutexA *)GetProcAddress(GetModuleHandleA("kernel32.dll"), "CreateMutexA");
 
